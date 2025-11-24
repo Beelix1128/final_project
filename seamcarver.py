@@ -213,9 +213,30 @@ class SeamCarver(Picture):
 
     def remove_horizontal_seam(self, seam: list[int]):
         '''
-        Remove a horizontal seam from the picture
+        Remove a horizontal seam from the picture.
         '''
-        raise NotImplementedError
+        w = self._width
+        h = self._height
+
+        # validity checks
+        
+        if h == 1 or len(seam) !=w:
+            raise SeamError
+
+        for i in range(len(seam)-1):
+            if abs(seam[i]-seam[i+1])>1:
+                raise SeamError
+
+        # shift pixel 
+
+        for x in range(w):
+            for y in range(seam[x],h-1):
+                self[x, y] = self[x,y+1]
+
+            # delete last pixel in the column
+            del self[x,h-1]  
+
+        self._height -= 1
 
 class SeamError(Exception):
     pass
